@@ -56,16 +56,16 @@ sudo tcpdump -i eth0 port 443 -v
 
 ## Apache2
 
-- Wich IP connected to my server
+- Wich IP went to my server and display the response Code
 ```BASH
 echo -e "Occurrences  | IP Address        | HTTP Code"
 echo "-------------------------------------------------"
-awk '{print $1, $9}' /var/log/apache2/access.log \
+awk '{print $1, $9}' /var/log/apache2/wordpress-access.log \
 | sort | uniq -c | sort -nr \
 | awk '{printf "%-12s | %-17s | %s\n", $1, $2, $3}'
-
 ```
 
+- Which IP generated an error
 ```BASH
 echo -e "Occurrences  | IP Address"
 echo -e "--------------------------" && \
@@ -77,7 +77,7 @@ grep -oE "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -c | sort -nr | awk '{pr
 
 ### Denied connections
 
-- Which Ip and what user tried to connect to my server
+- Which IP and what user tried to connect to my server
 ```BASH
 echo -e "Occurrences   | Username            | IP Address" 
 echo "------------------------------------------------------" 
@@ -87,6 +87,8 @@ awk '/Failed password/ {print $(NF-5), $(NF-3)}' /var/log/auth.log \
 ```
 
 ## Allowed connections
+
+- Which IP and what user did connect to my server
 ```BASH
 echo -e "Occurrences   | Username            | IP Address"
 echo "------------------------------------------------------"
@@ -98,7 +100,6 @@ awk '/Accepted password|Accepted publickey/ {
     print user, ip;
 }' /var/log/auth.log | sort | uniq -c | sort -nr \
 | awk '{printf "%-12s | %-18s | %s\n", $1, $2, $3}'
-
 ```
 
 # Users
