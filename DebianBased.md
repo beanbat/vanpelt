@@ -77,20 +77,33 @@ grep -oE "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -c | sort -nr | awk '{pr
 
 ### Denied connections
 
-- Denied per username
+- Tried usernames
 ```BASH
 echo -e "Occurrences   | Username" && \
 echo "-------------------------------------------" && \
 awk '/sshd\[.*\]: Invalid user/ {count[$6]++} END {for (user in count) printf "%-13s | %s\n", count[user], user}' /var/log/auth.log | sort -nr
 ```
 
-- Which IP and what user tried to connect to my server
+- Denied per users and IP
 ```BASH
-echo -e "Occurrences   | Username            | IP Address" 
-echo "------------------------------------------------------" 
-awk '/invalid/ {print $(NF-5), $(NF-3)}' /var/log/auth.log \
-| sort | uniq -c | sort -nr \
-| awk '{printf "%-12s | %-18s | %s\n", $1, $2, $3}'
+echo -e "Occurrences   | IP Address      | Usernames"
+echo "------------------------------------------------------------"
+awk '
+/sshd\[.*\]: Invalid user/ {
+    if (match($0, /Invalid user ([^ ]+) from ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/, arr)) {
+        ip_count[arr[2]]++                     # Comptage global de l’IP
+        user_attempts[arr[2], arr[1]]++         # Comptage par (IP, username)
+        if (!seen[arr[2], arr[1]]) {
+            user_list[arr[2]] = user_list[arr[2]] (user_list[arr[2]] ? ", " : "") arr[1]
+            seen[arr[2], arr[1]] = 1
+        }
+    }
+}
+END {
+    for (ip in ip_count) {
+        printf "%-13s | %-15s | %s\n", ip_count[ip], ip, user_list[ip]
+    }
+}' /var/log/auth.log | sort -nr
 ```
 
 ## Allowed connections
