@@ -79,10 +79,9 @@ grep -oE "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -c | sort -nr | awk '{pr
 
 - Denied per username
 ```BASH
-echo -e "Occurrences   | Username" \
-echo "-------------------------------------------" \
+echo -e "Occurrences   | Username" && \
+echo "-------------------------------------------" && \
 awk '/sshd\[.*\]: Invalid user/ {count[$6]++} END {for (user in count) printf "%-13s | %s\n", count[user], user}' /var/log/auth.log | sort -nr
-
 ```
 
 - Which IP and what user tried to connect to my server
