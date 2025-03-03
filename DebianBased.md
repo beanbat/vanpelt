@@ -122,6 +122,11 @@ awk '/Accepted password|Accepted publickey/ {
 | awk '{printf "%-12s | %-18s | %s\n", $1, $2, $3}'
 ```
 
+-grep a given IPv4 in a logfile
+```BASH
+grep -E "\b192\.168\.1\.56\b" /var/log/apache2/access.log
+```
+
 # Users
 
 - List sudo users
