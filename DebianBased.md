@@ -81,7 +81,7 @@ grep -oE "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -c | sort -nr | awk '{pr
 ```BASH
 echo -e "Occurrences   | Username            | IP Address" 
 echo "------------------------------------------------------" 
-awk '/Failed password/ {print $(NF-5), $(NF-3)}' /var/log/auth.log \
+awk '/invalid/ {print $(NF-5), $(NF-3)}' /var/log/auth.log \
 | sort | uniq -c | sort -nr \
 | awk '{printf "%-12s | %-18s | %s\n", $1, $2, $3}'
 ```
